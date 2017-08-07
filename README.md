@@ -1,17 +1,19 @@
 **Maauw Control // Pre-Alpha**
 -----------------
 **Automatic Gas Kiln Control Firmware for ATmega2560**
-Copyright (c) 2017, Syby Abraham, All rights reserved.
 
+
+Copyright (c) 2017, Syby Abraham, All rights reserved.
 ----------
 
 **Features**
 
- - 9 Firing Profiles
- - 9 Segments per Profile
- - 3 Segment Reduction
- - Adjustable Reduction Profiles
- - 
+ - 9 Firing Profiles [IMPLETMENTED]
+ - 9 Segments per Profile [IMPLEMENTED]
+ - 3 Segment Reduction [FUTURE]
+ - Adjustable Reduction Profiles [FUTURE]
+ - PID Controlled Gas Throttling [FUTURE]
+ - PID Controlled Reduction Damping [FUTURE]
 
 
 Maauw Control is free software: you can redistribute it and/or modify
