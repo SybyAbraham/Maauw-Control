@@ -4,7 +4,6 @@
 
 
 Copyright (c) 2017, Syby Abraham, All rights reserved.
-----------
 
 **Features**
 
