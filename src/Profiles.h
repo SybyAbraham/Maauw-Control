@@ -15,6 +15,7 @@
 #include "Segments.h"
 
 class Profiles : public Segments {
+
   public:
     Profiles();
     void setSegs(char[]);
@@ -23,11 +24,13 @@ class Profiles : public Segments {
 	void switchSetHold(int);
     void review();
 	void setTRH(int8_t);
+	int getSelParam();
+
   private:
     Segments seg[8]; //Create 9 segments for each profile
-    int16_t _segs;
+    int8_t _segs;
+	int8_t _selParam;
     int _getSegs();
-    void _createSegs(void);
     void _getVolatileSeg(void);
 };
 

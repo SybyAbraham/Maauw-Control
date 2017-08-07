@@ -32,9 +32,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/Segments.h"
 #include "src/MaauwOperations.h"
 
-//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); //HW I2C OLED
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); //HW I2C OLED
 //U8G2_ST7565_ZOLEN_128X64_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8);
-U8G2_ST7565_64128N_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8); //DEV VERSION HW SPI
+//U8G2_ST7565_64128N_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8); //DEV VERSION HW SPI
 
 ClickEncoder *encoder;
 int16_t lastValue, value;
@@ -45,7 +45,7 @@ void timerIsr() {
 
 OrtonCones cone;
 XBMPLogos logo;
-Profiles prf;
+Profiles prf[8]; //Create 8 profiles
 Segments seg;
 MaauwOperations core;
 
@@ -157,7 +157,7 @@ void setup(void) {
   int loader = 0;
 
   u8g2.begin();
-  u8g2.setFlipMode(1);
+  //u8g2.setFlipMode(1);
   u8g2.clearBuffer();          // clear the internal memory
   u8g2.drawXBMP( 0, 5, 128, 35, logo.maauw_logo_bits);
   u8g2.drawFrame(23, 49, 82, 6);
@@ -238,13 +238,8 @@ void loop(void) {
     page = 5;
   }
 
-  if (btnPress == true && page == 5) {
-    btnPress = false;
-    page = 6;
-  }
-
-
   drawMenu();
+
 }
 
 
@@ -339,49 +334,21 @@ void drawMenu() {
   }
 
   if (page == 4) {
-    prf.setSegs("Ramp Segments");
+    prf[0].setSegs("Ramp Segments");
   }
 
   if (page == 5) {
-	  seg.setHold(1);
-  }
-
-  if (page == 6) {
-    prf.setRamp("Ramp Segment 1");
-  }
-
-  if (page == 66) {
-    core.drawTitle("Brightness");
-    int brightness = value;
-
-    if (brightness <= 0) {
-      value = 0;
-      brightness = 0;
-    } else if (brightness >= 255) {
-      value = 255;
-      brightness = 255;
-    }
-
-    analogWrite(backlightPin, brightness);
-
-    u8g2.setFont(u8g2_font_helvB10_tf);
-    u8g2.setCursor(55, 48);
-    u8g2.print(brightness);
-  }
-
-  if (page == 77) {
-    core.drawTitle("Contrast");
-    int contrast = value;
-    u8g2.setContrast(contrast);
-    u8g2.setCursor(55, 48);
-    u8g2.print(contrast);
+	  prf[0].setTRH(1);
+	  if (prf[0].getSelParam() > 2) {
+		  page = 88;
+	  }
   }
 
   if (page == 88) {
     core.drawTitle("Get Temp");
     u8g2.setFont(u8g2_font_helvB10_tf);
     u8g2.setCursor(55, 48);
-    u8g2.print(prf.getTemp());
+    u8g2.print(prf[0].getTemp());
   }
 
   btnPress = false;

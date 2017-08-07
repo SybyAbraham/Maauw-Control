@@ -9,6 +9,7 @@
 
 Profiles::Profiles() {
 	_segs = 0;
+	_selParam = 0;
 }
 
 //Public Methods
@@ -43,9 +44,25 @@ void Profiles::review() {
 void Profiles::setTRH(int8_t segN) {
 	//Set Temperature, Ramp and Hold in an entire segment
 	if (btnPress == true) {
-			btnPress = false;
-			switchSetTemp(segN);
+		btnPress = false;
+		_selParam++;
 	}
+
+	switch (_selParam) {
+	case 0:
+		switchSetTemp(segN);
+		break;
+	case 1:
+		switchSetRamp(segN);
+		break;
+	case 2:
+		switchSetHold(segN);
+		break;
+	}
+}
+
+int Profiles::getSelParam() {
+	return _selParam;
 }
 
 void Profiles::switchSetTemp(int segN) {
