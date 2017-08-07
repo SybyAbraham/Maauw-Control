@@ -22,7 +22,7 @@ class Profiles : public Segments {
 	void switchSetRamp(int);
 	void switchSetHold(int);
     void review();
-	void setTRH();
+	void setTRH(int8_t);
   private:
     Segments seg[8]; //Create 9 segments for each profile
     int16_t _segs;

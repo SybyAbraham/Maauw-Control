@@ -1,7 +1,8 @@
 /*
-Maauw Control // Automatic Kiln Control Firmware // PRE-ALPHA
+Maauw Control // Automatic Kiln Control Firmware for ATmega2560 // PRE-ALPHA
 
-Maauw Control Is Designed to Run on the Atmega2560 MCU. 
+Copyright (c) 2017, Syby Abraham, sybyabraham@hotmail.com
+All rights reserved.
 
 Maauw Control is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,7 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright (c) 2017 Syby Abraham.
 */
 
 #include <Arduino.h>
@@ -26,11 +26,11 @@ Copyright (c) 2017 Syby Abraham.
 #include <ClickEncoder.h>
 #include <TimerOne.h>
 
-#include "OrtonCones.h"
-#include "Profiles.h"
-#include "XBMPLogos.h"
-#include "Segments.h"
-#include "MaauwOperations.h"
+#include "src/OrtonCones.h"
+#include "src/Profiles.h"
+#include "src/XBMPLogos.h"
+#include "src/Segments.h"
+#include "src/MaauwOperations.h"
 
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); //HW I2C OLED
 //U8G2_ST7565_ZOLEN_128X64_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8);

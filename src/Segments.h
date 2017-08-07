@@ -22,8 +22,7 @@
 
 
 extern int16_t lastValue, value;
-extern boolean up;
-extern boolean down;
+extern bool btnPress;
 //extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2; //HW I2C OLED
 extern U8G2_ST7565_64128N_F_4W_HW_SPI u8g2; //DEV VERSION HW SPI LCD
 extern OrtonCones cone;
@@ -36,16 +35,16 @@ class Segments{
     int getTemp();
     int getRamp();
     int getHold();
-    void setSegTemp(int);
+    void setTemp(int);
     void setRamp(int);
     void setHold(int);
 
   private:
     char _tempChar[10];
-	int16_t _temp; //Temp in °C
-	int16_t _ramp; //Ramp rate in °C/HR
-	int16_t _holdHours;
-	int16_t _holdMinutes;
+	int8_t _temp; //Temp in °C
+	int8_t _ramp; //Ramp rate in °C/HR
+	int8_t _holdHours;
+	int8_t _holdMinutes;
     unsigned long _hold; //Hold time in millis
 };
 #endif

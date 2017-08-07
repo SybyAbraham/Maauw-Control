@@ -30,7 +30,7 @@ int Segments::getHold() {
 }
 
 //MUTATE AND DRAW
-void Segments::setSegTemp(int segN) {
+void Segments::setTemp(int segN) {
 
 	char menuTitle[15]; //Create variable to hold converted char
 	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var

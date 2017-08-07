@@ -40,43 +40,42 @@ void Profiles::review() {
 
 }
 
-void Profiles::setTRH(int segN) {
+void Profiles::setTRH(int8_t segN) {
 	//Set Temperature, Ramp and Hold in an entire segment
 	if (btnPress == true) {
 			btnPress = false;
 			switchSetTemp(segN);
 	}
-
 }
 
 void Profiles::switchSetTemp(int segN) {
 	switch (segN) {
 	case 1:
-		seg[0].setSegTemp(1);
+		seg[0].setTemp(1);
 		break;
 	case 2:
-		seg[1].setSegTemp(2);
+		seg[1].setTemp(2);
 		break;
 	case 3:
-		seg[2].setSegTemp(3);
+		seg[2].setTemp(3);
 		break;
 	case 4:
-		seg[3].setSegTemp(4);
+		seg[3].setTemp(4);
 		break;
 	case 5:
-		seg[4].setSegTemp(5);
+		seg[4].setTemp(5);
 		break;
 	case 6:
-		seg[5].setSegTemp(6);
+		seg[5].setTemp(6);
 		break;
 	case 7:
-		seg[6].setSegTemp(7);
+		seg[6].setTemp(7);
 		break;
 	case 8:
-		seg[7].setSegTemp(8);
+		seg[7].setTemp(8);
 		break;
 	case 9:
-		seg[8].setSegTemp(9);
+		seg[8].setTemp(9);
 		break;
 	}
 }
