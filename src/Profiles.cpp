@@ -1,5 +1,5 @@
 /*
-  Profiles.h - Firing Profile Management Library for the Maauw Automatic Kiln
+  Profiles.cpp - Firing Profile Management Library for the Maauw Automatic Kiln
   Copyright (c) 2017 Syby Abraham.
 */
 
@@ -10,6 +10,7 @@
 Profiles::Profiles() {
 	_segs = 0;
 	_selParam = 0;
+	_currentSeg = 1;
 }
 
 //Public Methods
@@ -37,32 +38,40 @@ void Profiles::setSegs(char sName[]) {
 	u8g2.drawUTF8(core.centerLine(segChar), 48, segChar);
 }
 
-void Profiles::review() {
+void Profiles::setTRH() {
+	//Set Temperature, Ramp and Hold across all segments in an entire profile
+	
 
-}
-
-void Profiles::setTRH(int8_t segN) {
-	//Set Temperature, Ramp and Hold in an entire segment
 	if (btnPress == true) {
 		btnPress = false;
 		_selParam++;
+	} 
+	if (_selParam > 2) {
+		_selParam = 0;
+		_currentSeg++;
+	}
+	else if (_currentSeg > _segs) {
+		//exit 
+		_selParam = 0;
+		_currentSeg = 1;
 	}
 
+	Serial.print("Current Segment: ");
+	Serial.println(_currentSeg);
+	Serial.print("Selected Param: ");
+	Serial.println(_selParam);
 	switch (_selParam) {
 	case 0:
-		switchSetTemp(segN);
+		//setSegs();
+		switchSetTemp(_currentSeg);
 		break;
 	case 1:
-		switchSetRamp(segN);
+		switchSetRamp(_currentSeg);
 		break;
 	case 2:
-		switchSetHold(segN);
+		switchSetHold(_currentSeg);
 		break;
 	}
-}
-
-int Profiles::getSelParam() {
-	return _selParam;
 }
 
 void Profiles::switchSetTemp(int segN) {
@@ -159,6 +168,42 @@ void Profiles::switchSetHold(int segN) {
 		seg[8].setHold(9);
 		break;
 	}
+}
+
+int Profiles::switchGetTemp(int segN) {
+	switch (segN) {
+	case 1:
+		return seg[0].getTemp();
+		break;
+	case 2:
+		return seg[1].getTemp();
+		break;
+	case 3:
+		return seg[2].getTemp();
+		break;
+	case 4:
+		return seg[3].getTemp();
+		break;
+	case 5:
+		return seg[4].getTemp();
+		break;
+	case 6:
+		return seg[5].getTemp();
+		break;
+	case 7:
+		return seg[6].getTemp();
+		break;
+	case 8:
+		return seg[7].getTemp();
+		break;
+	case 9:
+		return seg[8].getTemp();
+		break;
+	}
+}
+
+void Profiles::review() {
+
 }
 
 //Private Methods

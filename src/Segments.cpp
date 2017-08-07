@@ -1,5 +1,5 @@
 /*
-  Segments.h - Segmented Temperature, Ramp and Hold Adjustment Library for the Maauw Automatic Kiln
+  Segments.cpp - Segmented Temperature, Ramp and Hold Adjustment Library for the Maauw Automatic Kiln
   Copyright (c) 2017 Syby Abraham.
 */
 
@@ -9,11 +9,11 @@
 Segments::Segments() {
 	//init private variables
 	char _tempChar[10] = "";
-	int _temp = 0;
-	int _ramp = 0;
-	int _holdHours = 0;
-	int _holdMinutes = 0;
-	int _hold = 0;
+	int16_t _temp = 0;
+	int16_t _ramp = 0;
+	int16_t _hold = 0;
+	int8_t _holdHours = 0;
+	int8_t _holdMinutes = 0;
 }
 
 //ACCESSORS
@@ -168,6 +168,11 @@ void Segments::setHold(int segN) {
 	}
 	else {
 		minStr = "";
+	}
+	
+	if (_holdMinutes == 0 && _holdHours == 0) {
+		hrsStr = "";
+		minStr = "No Hold";
 	}
 
 	u8g2.setFont(u8g2_font_crox1hb_tr);

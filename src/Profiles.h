@@ -22,14 +22,15 @@ class Profiles : public Segments {
     void switchSetTemp(int);
 	void switchSetRamp(int);
 	void switchSetHold(int);
+	int switchGetTemp(int);
     void review();
-	void setTRH(int8_t);
-	int getSelParam();
+	void setTRH();
 
   private:
     Segments seg[8]; //Create 9 segments for each profile
     int8_t _segs;
 	int8_t _selParam;
+	int8_t _currentSeg;
     int _getSegs();
     void _getVolatileSeg(void);
 };

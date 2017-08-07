@@ -1,5 +1,5 @@
 /*
-MaauwOperations.h - Maauw Automatic Kiln Control Firmware Core Functions
+MaauwOperations.cpp - Maauw Automatic Kiln Control Firmware Core Functions
 Copyright (c) 2017 Syby Abraham.
 */
 
