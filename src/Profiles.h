@@ -13,26 +13,42 @@
 #endif
 
 #include "Segments.h"
+#include <EEPROM.h>
 
 class Profiles : public Segments {
 
   public:
+	//Constructor
     Profiles();
-    void setSegs(char[]);
-    void switchSetTemp(int);
-	void switchSetRamp(int);
-	void switchSetHold(int);
-	int switchGetTemp(int);
+
+	//Methods
+    void setSegs(void);
     void review();
-	void setTRH();
+	void setTRH(int);
+	void eepromWriteProfile(int prfN);
+	void eepromReadProfile(int prfN);
+	unsigned int switchGetTemp(int);
+	unsigned int switchGetRamp(int);
+	unsigned long switchGetHold(int); 
+	bool getExit(void);
+	void setExit(bool);
 
   private:
-    Segments seg[8]; //Create 9 segments for each profile
+	//Create 9 segment objects for each profile
+	  Segments seg[8];
+
+	//Variables
     int8_t _segs;
 	int8_t _selParam;
 	int8_t _currentSeg;
-    int _getSegs();
-    void _getVolatileSeg(void);
+	int32_t _eeAddress;
+	bool _exitState;
+
+	//Methods
+	void switchSetTemp(int);
+	void switchSetRamp(int);
+	void switchSetHold(int); 
+	
 };
 
 #endif

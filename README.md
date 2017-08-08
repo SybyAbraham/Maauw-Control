@@ -13,8 +13,8 @@ Copyright (c) 2017, Syby Abraham, All rights reserved.
 
  - 9 Firing Profiles
  - 9 Segments per Profile
+ - Non-volatile Profiles [Work in Progress]
  - 3 Segment Reduction [Future]
- - Adjustable Reduction Profiles [Future]
  - PID Controlled Gas Throttling [Future]
  - PID Controlled Reduction Damping [Future]
 

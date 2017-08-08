@@ -46,7 +46,7 @@ void timerIsr() {
 
 OrtonCones cone;
 XBMPLogos logo;
-Profiles prf[8]; //Create 8 profiles
+Profiles profile; //Create 8 profiles
 Segments seg;
 MaauwOperations core;
 
@@ -168,7 +168,6 @@ void setup(void) {
 
 	pinMode(backlightPin, OUTPUT);
 	int loader = 0;
-
 	u8g2.begin();
 	u8g2.setFlipMode(1);
 	u8g2.clearBuffer();          // clear the internal memory
@@ -189,6 +188,7 @@ void setup(void) {
 
 	Timer1.initialize(1000);
 	Timer1.attachInterrupt(timerIsr);
+	profile.eepromReadProfile(1);
 	for (loader; loader < 82; loader++) {
 		u8g2.drawBox(23, 49, loader, 6);
 		//delay(30);
@@ -203,10 +203,6 @@ void setup(void) {
 	delay(1000);
 	u8g2.clearDisplay();
 	Serial.println(EEPROM.length());
-	Serial.println(sizeof(int8_t));
-	Serial.println(sizeof(int16_t));
-	Serial.println(sizeof(int));
-	Serial.println(sizeof(unsigned long));
 
 	lastValue = -1;
 }
@@ -287,8 +283,7 @@ void drawMenu() {
 
 		u8g2.setFont(u8g2_font_helvR08_tf);
 		char statusTxt[] = "FIRING TO 10OX";
-		int mmx = (128 - u8g2.getStrWidth(statusTxt)) / 2;        //Math for centering
-		u8g2.drawUTF8(mmx, 64, statusTxt);
+		u8g2.drawUTF8(core.centerLine(statusTxt), 64, statusTxt);
 	}
 
 	if (page == 2) {
@@ -354,28 +349,38 @@ void drawMenu() {
 	}
 
 	if (page == 4) {
-		prf[0].setSegs();
+		profile.setSegs();
 	}
 
 	if (page == 5) {
-		prf[0].setTRH();
-	}
+		if (profile.getExit() == false) {
+			profile.setTRH(1);
+		}
+		else {
+			//profile[0].setExit(false); //Make accessible
+			core.drawTitle("Profile 1");
+			u8g2.setFont(u8g2_font_helvB10_tf);
+			u8g2.drawUTF8(core.centerLine("Profile 1 Saved!"), 51, "Profile 1 Saved!");
+		}
+	} 
+
 
 	if (page == 88) {
-		core.drawTitle("Get Temp");/*
+		core.drawTitle("Debug");
 		u8g2.setFont(u8g2_font_helvB10_tf);
-		u8g2.setCursor(0, 48);
-		u8g2.print(prf[0].switchGetTemp(1));
-		u8g2.setCursor(20, 48);
-		u8g2.print(prf[0].switchGetTemp(2));
-		u8g2.setCursor(40, 48);
-		u8g2.print(prf[0].switchGetTemp(3));
-		u8g2.setCursor(60, 48);
-		u8g2.print(prf[0].switchGetTemp(4));
-		u8g2.setCursor(80, 48);
-		u8g2.print(prf[1].switchGetTemp(1)); */
-
-	}
+		u8g2.setCursor(0, 25);
+		u8g2.print(profile.switchGetTemp(1));
+		u8g2.setCursor(30, 25);
+		u8g2.print(profile.switchGetRamp(1));
+		u8g2.setCursor(60, 25);
+		u8g2.print(profile.switchGetHold(1));
+		u8g2.setCursor(0, 45);
+		u8g2.print(profile.switchGetTemp(2));
+		u8g2.setCursor(30, 45);
+		u8g2.print(profile.switchGetRamp(2));
+		u8g2.setCursor(60, 45);
+		u8g2.print(profile.switchGetHold(2)); 
+	} 
 
 	btnPress = false;
 	u8g2.sendBuffer();

@@ -6,11 +6,7 @@
 #ifndef Segments_h
 #define Segments_h
 
-#if (ARDUINO >= 100)
 #include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
 
 #include <U8g2lib.h>
 
@@ -32,19 +28,23 @@ extern MaauwOperations core;
 class Segments{
   public:
     Segments();
-    int getTemp();
-    int getRamp();
-    int getHold();
-    void setTemp(int);
-    void setRamp(int);
-    void setHold(int);
+    unsigned int getTemp();
+    unsigned int getRamp();
+    unsigned long getHold();
+	void setTemp(unsigned int);
+	void setRamp(unsigned int);
+	void setHold(unsigned long);
+    void setTempUI(int);
+    void setRampUI(int);
+    void setHoldUI(int);
 
   private:
     char _tempChar[10];
-	int16_t _temp; //Temp in °C
-	int16_t _ramp; //Ramp rate in °C/HR
-	int8_t _holdHours;
-	int8_t _holdMinutes;
-    unsigned long _hold; //Hold time in millis
+	unsigned int _temp; //Temp in °C
+	unsigned int _ramp; //Ramp rate in °C/HR
+	unsigned long _hold; //Hold time in millis
+	unsigned int _holdHours;
+	unsigned int _holdMinutes;
+    
 };
 #endif
