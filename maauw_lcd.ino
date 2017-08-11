@@ -46,8 +46,7 @@ void timerIsr() {
 
 OrtonCones cone;
 XBMPLogos logo;
-Profiles profile; //Create 8 profiles
-Segments seg;
+Profiles profile[9]; //Create 9 profiles
 MaauwOperations core;
 
 char menuItem1[] = "Kiln Settings";
@@ -174,6 +173,7 @@ void setup(void) {
 	u8g2.drawXBMP(0, 5, 128, 35, logo.maauw_logo_bits);
 	u8g2.drawFrame(23, 49, 82, 6);
 	u8g2.sendBuffer();          // transfer internal memory to the display
+
 	for (loader = 0; loader < 41; loader++) {
 		u8g2.drawBox(23, 49, loader, 6);
 		//delay(30);
@@ -188,9 +188,15 @@ void setup(void) {
 
 	Timer1.initialize(1000);
 	Timer1.attachInterrupt(timerIsr);
-	profile.eepromReadProfile(1);
+
+	for (int i = 0; i < 9; i++) {
+		Serial.println(i);
+		profile[i].eepromReadProfile(i + 1); //Load all profiles from EEPROM at startup
+	}
+	
 	for (loader; loader < 82; loader++) {
 		u8g2.drawBox(23, 49, loader, 6);
+	
 		//delay(30);
 		u8g2.sendBuffer();
 	}
@@ -202,7 +208,6 @@ void setup(void) {
 	u8g2.sendBuffer();
 	delay(1000);
 	u8g2.clearDisplay();
-	Serial.println(EEPROM.length());
 
 	lastValue = -1;
 }
@@ -349,12 +354,12 @@ void drawMenu() {
 	}
 
 	if (page == 4) {
-		profile.setSegs();
+		profile[0].setSegs();
 	}
 
 	if (page == 5) {
-		if (profile.getExit() == false) {
-			profile.setTRH(1);
+		if (profile[0].getExit() == false) {
+			profile[0].setTRH(1);
 		}
 		else {
 			//profile[0].setExit(false); //Make accessible
@@ -369,17 +374,17 @@ void drawMenu() {
 		core.drawTitle("Debug");
 		u8g2.setFont(u8g2_font_helvB10_tf);
 		u8g2.setCursor(0, 25);
-		u8g2.print(profile.switchGetTemp(1));
+		u8g2.print(profile[0].switchGetTemp(1));
 		u8g2.setCursor(30, 25);
-		u8g2.print(profile.switchGetRamp(1));
+		u8g2.print(profile[0].switchGetRamp(1));
 		u8g2.setCursor(60, 25);
-		u8g2.print(profile.switchGetHold(1));
+		u8g2.print(profile[0].switchGetHold(1));
 		u8g2.setCursor(0, 45);
-		u8g2.print(profile.switchGetTemp(2));
+		u8g2.print(profile[0].switchGetTemp(2));
 		u8g2.setCursor(30, 45);
-		u8g2.print(profile.switchGetRamp(2));
+		u8g2.print(profile[0].switchGetRamp(2));
 		u8g2.setCursor(60, 45);
-		u8g2.print(profile.switchGetHold(2)); 
+		u8g2.print(profile[0].switchGetHold(2)); 
 	} 
 
 	btnPress = false;

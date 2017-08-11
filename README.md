@@ -13,10 +13,10 @@ Copyright (c) 2017, Syby Abraham, All rights reserved.
 
  - 9 Firing Profiles
  - 9 Segments per Profile
- - Non-volatile Profiles [Work in Progress]
+ - Non-volatile Profiles
  - 3 Segment Reduction [Future]
- - PID Controlled Gas Throttling [Future]
- - PID Controlled Reduction Damping [Future]
+ - PID controlled Gas Throttling [Future]
+ - PID controlled Reduction Damping [Future]
 
 
 Maauw Control is free software: you can redistribute it and/or modify

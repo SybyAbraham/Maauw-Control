@@ -25,17 +25,17 @@ class Profiles : public Segments {
     void setSegs(void);
     void review();
 	void setTRH(int);
-	void eepromWriteProfile(int prfN);
-	void eepromReadProfile(int prfN);
-	unsigned int switchGetTemp(int);
-	unsigned int switchGetRamp(int);
-	unsigned long switchGetHold(int); 
+	void eepromWriteProfile(uint8_t prfN);
+	void eepromReadProfile(uint8_t prfN);
+	uint16_t switchGetTemp(uint8_t);
+	uint16_t switchGetRamp(uint8_t);
+	uint16_t switchGetHold(uint8_t);
 	bool getExit(void);
 	void setExit(bool);
 
   private:
 	//Create 9 segment objects for each profile
-	  Segments seg[8];
+	  Segments seg[9];
 
 	//Variables
     int8_t _segs;
@@ -45,9 +45,9 @@ class Profiles : public Segments {
 	bool _exitState;
 
 	//Methods
-	void switchSetTemp(int);
-	void switchSetRamp(int);
-	void switchSetHold(int); 
+	void switchSetTemp(uint8_t);
+	void switchSetRamp(uint8_t);
+	void switchSetHold(uint8_t);
 	
 };
 

@@ -30,21 +30,21 @@ class Segments{
     Segments();
     unsigned int getTemp();
     unsigned int getRamp();
-    unsigned long getHold();
-	void setTemp(unsigned int);
-	void setRamp(unsigned int);
-	void setHold(unsigned long);
-    void setTempUI(int);
-    void setRampUI(int);
-    void setHoldUI(int);
+    unsigned int getHold();
+	void setTemp(uint16_t);
+	void setRamp(uint16_t);
+	void setHold(uint16_t);
+    void setTempUI(uint8_t);
+    void setRampUI(uint8_t);
+    void setHoldUI(uint8_t);
 
   private:
     char _tempChar[10];
-	unsigned int _temp; //Temp in °C
-	unsigned int _ramp; //Ramp rate in °C/HR
-	unsigned long _hold; //Hold time in millis
-	unsigned int _holdHours;
-	unsigned int _holdMinutes;
+	uint16_t _temp; //Temp in °C
+	uint16_t _ramp; //Ramp rate in °C/HR
+	uint8_t _hold; //Hold time in minutes
+	uint8_t _holdHours;
+	uint8_t _holdMinutes;
     
 };
 #endif

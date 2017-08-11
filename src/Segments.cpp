@@ -9,40 +9,40 @@
 Segments::Segments() {
 	//init private variables
 	char _tempChar[10] = "";
-	unsigned int _temp = 0;
-	unsigned int _ramp = 0;
-	unsigned long _hold = 0;
-	int _holdHours = 0;
-	int _holdMinutes = 0;
+	_temp = 0;
+	_ramp = 0;
+	_hold = 0; 
+	_holdHours = 0;
+	_holdMinutes = 0;
 }
 
 //ACCESSORS
-unsigned int Segments::getTemp() {
+uint16_t Segments::getTemp() {
 	return _temp;
 }
 
-unsigned int Segments::getRamp() {
+uint16_t Segments::getRamp() {
 	return _ramp;
 }
 
-unsigned long Segments::getHold() {
+uint16_t Segments::getHold() {
 	return _hold;
 }
 
 
 //Mutators
-void Segments::setTemp(unsigned int t) {
+void Segments::setTemp(uint16_t t) {
 	_temp = t;
 }
-void Segments::setRamp(unsigned int r) {
+void Segments::setRamp(uint16_t r) {
 	_ramp = r;
 }
-void Segments::setHold(unsigned long h) {
+void Segments::setHold(uint16_t h) {
 	_hold = h;
 }
 
 //MUTATE AND DRAW
-void Segments::setTempUI(int segN) {
+void Segments::setTempUI(uint8_t segN) {
 
 	char menuTitle[15]; //Create variable to hold converted char
 	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
@@ -92,7 +92,7 @@ void Segments::setTempUI(int segN) {
 	u8g2.drawUTF8(90, 51, coneChar);
 }
 
-void Segments::setRampUI(int segN) {
+void Segments::setRampUI(uint8_t segN) {
 
 	char menuTitle[15];		//Create variable to hold converted char
 	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
@@ -107,15 +107,13 @@ void Segments::setRampUI(int segN) {
 		value = 500;
 		_ramp = 500;
 	}
-	Serial.print("Ramp Value: ");
-	Serial.println(_ramp);
 	char rampChar[10];
 	core.convertToChar((String(_ramp) + String("°C/HR")), rampChar);
 	u8g2.setFont(u8g2_font_helvB10_tf);
 	u8g2.drawUTF8(core.centerLine(rampChar), 51, rampChar);
 }
 
-void Segments::setHoldUI(int segN) {
+void Segments::setHoldUI(uint8_t segN) {
 	char menuTitle[15];			//Create variable to hold converted char
 	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
 	core.drawTitle(menuTitle);	//Draw the title using the converted var
@@ -141,7 +139,7 @@ void Segments::setHoldUI(int segN) {
 		}
 	}
 
-	_hold = (_holdMinutes * 60000) + (_holdHours * 3600000);
+	_hold = _holdMinutes + (_holdHours * 60); //Convert hours and minutes to minutes
 
 	char charHrMin[25];
 	String hrsStr;

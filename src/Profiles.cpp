@@ -53,15 +53,12 @@ void Profiles::setTRH(int prfN) {
 
 	if (_currentSeg > _segs) {
 		//1. EEPROM Write & EPPROM Read and Assign to variables
-		Serial.println("WRITING TO EEPROM");
 		eepromWriteProfile(prfN);
-		Serial.println("READING FROM EEPROM");
-		eepromReadProfile(prfN);
-
 		//2. Exit.   Using while loop in main file?
-		_selParam = 0;
-		_currentSeg = 1;
 		_exitState = true;
+		_selParam = 2;
+		_currentSeg = 1;
+		//eepromReadProfile(prfN); //Read from EEPROM and assign variables
 	}
 	else { 
 		_exitState = false;
@@ -79,7 +76,7 @@ void Profiles::setTRH(int prfN) {
 	}
 }
 
-void Profiles::eepromWriteProfile(int prfN) {
+void Profiles::eepromWriteProfile(uint8_t prfN) {
 
 	//72 bytes is the maximum size all the variables in a profile takes. 
 	//Multiplying it by the (profile number -1) gives us the starting position(address) for each profile. 
@@ -88,33 +85,40 @@ void Profiles::eepromWriteProfile(int prfN) {
 	_eeAddress = (prfN - 1) * 72;
 
 	for (int i = 1; i < 9; i++) {
-		EEPROM.update(_eeAddress, switchGetTemp(i));	//Write temprature to EEPROM
-		_eeAddress += sizeof(int);						//Advance address by the byte size of int (2)
-		EEPROM.update(_eeAddress, switchGetRamp(i));	//Write ramp to EEPROM
-		_eeAddress += sizeof(int);						//Advance address by the byte size of int (2)
-		EEPROM.update(_eeAddress, switchGetHold(i));	//Write hold to EEPROM
-		_eeAddress += sizeof(unsigned long);			//Advance address by the byte size of unsigned long (4)
+		Serial.print("Temp: ");
+		Serial.println(switchGetTemp(i));
+		EEPROM.put(_eeAddress, switchGetTemp(i));	//Write temprature to EEPROM
+		_eeAddress += sizeof(uint16_t);						//Advance address by the byte size of int (2)
+		Serial.print("Ramp: ");
+		Serial.println(switchGetRamp(i));
+		EEPROM.put(_eeAddress, switchGetRamp(i));	//Write ramp to EEPROM
+		_eeAddress += sizeof(uint16_t);						//Advance address by the byte size of int (2)
+		Serial.print("Hold: ");
+		Serial.println(switchGetHold(i));
+		EEPROM.put(_eeAddress, switchGetHold(i));	//Write hold to EEPROM
+		_eeAddress += sizeof(uint16_t);			//Advance address by the byte size of uint16_t (2)
 	}
 	_eeAddress = 0;
 }
 
-void Profiles::eepromReadProfile(int prfN) {
+void Profiles::eepromReadProfile(uint8_t prfN) {
+
 
 	_eeAddress = (prfN - 1) * 72;
 
 	for (int i = 0; i < 9; i++) {
-		int eeTemp;
-		int eeRamp;
-		unsigned long eeHold;
+		uint16_t eeTemp;
+		uint16_t eeRamp;
+		uint16_t eeHold;
 		EEPROM.get(_eeAddress, eeTemp);
 		seg[i].setTemp(eeTemp);
-		_eeAddress += sizeof(int);
+		_eeAddress += sizeof(uint16_t);
 		EEPROM.get(_eeAddress, eeRamp);
 		seg[i].setRamp(eeRamp);
-		_eeAddress += sizeof(int);
+		_eeAddress += sizeof(uint16_t);
 		EEPROM.get(_eeAddress, eeHold);
 		seg[i].setHold(eeHold);
-		_eeAddress += sizeof(unsigned long);
+		_eeAddress += sizeof(uint16_t);
 	}
 	_eeAddress = 0;
 } 
@@ -132,7 +136,7 @@ void Profiles::setExit(bool state) {
 	_exitState = state;
 }
 
-void Profiles::switchSetTemp(int segNT) {
+void Profiles::switchSetTemp(uint8_t segNT) {
 	switch (segNT) {
 	case 1:
 		seg[0].setTempUI(1);
@@ -164,7 +168,7 @@ void Profiles::switchSetTemp(int segNT) {
 	}
 }
 
-void Profiles::switchSetRamp(int segNR) {
+void Profiles::switchSetRamp(uint8_t segNR) {
 	switch (segNR) {
 	case 1:
 		seg[0].setRampUI(1);
@@ -196,7 +200,7 @@ void Profiles::switchSetRamp(int segNR) {
 	}
 }
 
-void Profiles::switchSetHold(int segNH) {
+void Profiles::switchSetHold(uint8_t segNH) {
 	switch (segNH) {
 	case 1:
 		seg[0].setHoldUI(1);
@@ -228,7 +232,7 @@ void Profiles::switchSetHold(int segNH) {
 	}
 }
 
-unsigned int Profiles::switchGetTemp(int segN) {
+uint16_t Profiles::switchGetTemp(uint8_t segN) {
 	switch (segN) {
 	case 1:
 		return seg[0].getTemp();
@@ -260,7 +264,7 @@ unsigned int Profiles::switchGetTemp(int segN) {
 	}
 }
 
-unsigned int Profiles::switchGetRamp(int segN) {
+uint16_t Profiles::switchGetRamp(uint8_t segN) {
 	switch (segN) {
 	case 1:
 		return seg[0].getRamp();
@@ -292,7 +296,7 @@ unsigned int Profiles::switchGetRamp(int segN) {
 	}
 }
 
-unsigned long Profiles::switchGetHold(int segN) {
+uint16_t Profiles::switchGetHold(uint8_t segN) {
 	switch (segN) {
 	case 1:
 		return seg[0].getHold();
