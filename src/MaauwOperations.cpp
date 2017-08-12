@@ -56,3 +56,31 @@ void MaauwOperations::drawMenuItem(int pos, char dmText[], bool box) {
 		u8g2.drawStr(3, pos, dmText);                       //Draw string on display
 	}
 }
+
+void MaauwOperations::readEncoderDirection() {
+	value += encoder->getValue();
+
+	if (value > lastValue) {
+		lastValue = value;
+		down = true;
+
+	}
+	else if (value < lastValue) {
+		lastValue = value;
+		up = true;
+	}
+}
+
+void MaauwOperations::readEncoderButton() {
+	ClickEncoder::Button b = encoder->getButton();
+	if (b != ClickEncoder::Open) {
+		switch (b) {
+		case ClickEncoder::Clicked:
+			btnPress = true;
+			break;
+		case ClickEncoder::Held:
+			page = 1;
+			break;
+		}
+	}
+}

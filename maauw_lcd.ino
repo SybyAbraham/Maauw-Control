@@ -32,13 +32,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/XBMPLogos.h"
 #include "src/Segments.h"
 #include "src/MaauwOperations.h"
+//#include "src/Reduction.h"
 
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); //HW I2C OLED
 //U8G2_ST7565_ZOLEN_128X64_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8);
 U8G2_ST7565_64128N_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8); //DEV VERSION HW SPI
 
 ClickEncoder *encoder;
-int16_t lastValue, value;
+uint16_t lastValue, value;
 
 void timerIsr() {
 	encoder->service();
@@ -50,7 +51,7 @@ Profiles profile[9]; //Create 9 profiles
 MaauwOperations core;
 
 char menuItem1[] = "Kiln Settings";
-char menuItem2[] = "Ramp Profiles";
+char menuItem2[] = "Firing Profiles";
 char menuItem3[] = "Reduction Settings";
 char menuItem4[] = "Network Settings";
 char menuItem5[] = "Display";
@@ -58,45 +59,12 @@ char menuItem6[] = "Maauw Control";
 
 int backlightPin = 6;
 
-int prevMenuItem = 1;
-int frame = 1;
-int page = 1;
-int selMenuItem = 1;
+uint8_t prevMenuItem = 1, frame = 1, page = 1, selMenuItem = 1;
 
-boolean up = false;
-boolean down = false;
-boolean btnPress = false;
+bool up = false, down = false, btnPress = false;
 
 unsigned long previousMillis = 0;
 int stateF = 1;
-
-void readEncoderDirection() {
-	value += encoder->getValue();
-
-	if (value > lastValue) {
-		lastValue = value;
-		down = true;
-
-	}
-	else if (value < lastValue) {
-		lastValue = value;
-		up = true;
-	}
-}
-
-void readEncoderButton() {
-	ClickEncoder::Button b = encoder->getButton();
-	if (b != ClickEncoder::Open) {
-		switch (b) {
-		case ClickEncoder::Clicked:
-			btnPress = true;
-			break;
-		case ClickEncoder::Held:
-			page = 1;
-			break;
-		}
-	}
-}
 
 void drawMenuItems() {
 	if (frame == 1 && selMenuItem == 1) {
@@ -193,10 +161,10 @@ void setup(void) {
 		Serial.println(i);
 		profile[i].eepromReadProfile(i + 1); //Load all profiles from EEPROM at startup
 	}
-	
+
 	for (loader; loader < 82; loader++) {
 		u8g2.drawBox(23, 49, loader, 6);
-	
+
 		//delay(30);
 		u8g2.sendBuffer();
 	}
@@ -219,8 +187,8 @@ void setup(void) {
 //////////LOOP//////////LOOP//////////LOOP//////////LOOP//////////LOOP//////////LOOP//////////LOOP//////////
 void loop(void) {
 
-	readEncoderDirection();
-	readEncoderButton();
+	core.readEncoderDirection();
+	core.readEncoderButton();
 
 	if (btnPress && page == 1) {
 		btnPress = false;
@@ -232,7 +200,7 @@ void loop(void) {
 		page = 3;
 	}
 
-	if (btnPress == true && page == 2 && selMenuItem == 5) {
+	if (btnPress == true && page == 2 && selMenuItem == 3) {
 		btnPress = false;
 		page = 66;
 	}
@@ -278,7 +246,7 @@ void drawMenu() {
 			u8g2.drawXBMP(3, 3, 16, 13, logo.fireAl_bits);
 		}
 
-		int tempC = 432;
+		uint16_t tempC = value;
 
 		u8g2.setFont(u8g2_font_helvB10_tf);
 		char tempChar[10]; //Maximum possible array lenth
@@ -289,10 +257,10 @@ void drawMenu() {
 		u8g2.setFont(u8g2_font_helvR08_tf);
 		char statusTxt[] = "FIRING TO 10OX";
 		u8g2.drawUTF8(core.centerLine(statusTxt), 64, statusTxt);
+		profile[6].setExit(false); //Make profiles accessible again
 	}
 
 	if (page == 2) {
-
 		core.drawTitle("Main Menu");
 		if (down == true) {
 			down = false;
@@ -358,17 +326,20 @@ void drawMenu() {
 	}
 
 	if (page == 5) {
-		if (profile[0].getExit() == false) {
-			profile[0].setTRH(1);
+		if (profile[6].getExit() == false) {
+			profile[6].setTRH(7);
+			previousMillis = millis();
 		}
 		else {
-			//profile[0].setExit(false); //Make accessible
-			core.drawTitle("Profile 1");
+			core.drawTitle("Profile 7");
 			u8g2.setFont(u8g2_font_helvB10_tf);
-			u8g2.drawUTF8(core.centerLine("Profile 1 Saved!"), 51, "Profile 1 Saved!");
+			u8g2.drawUTF8(core.centerLine("Profile 7 Saved!"), 45, "Profile 7 Saved!");
+			unsigned long currentMillis = millis();
+			if (currentMillis - previousMillis >= 1000) {
+				page = 1;
+			}
 		}
-	} 
-
+	}
 
 	if (page == 88) {
 		core.drawTitle("Debug");
@@ -380,12 +351,39 @@ void drawMenu() {
 		u8g2.setCursor(60, 25);
 		u8g2.print(profile[0].switchGetHold(1));
 		u8g2.setCursor(0, 45);
-		u8g2.print(profile[0].switchGetTemp(2));
+		u8g2.print(profile[6].switchGetTemp(2));
 		u8g2.setCursor(30, 45);
-		u8g2.print(profile[0].switchGetRamp(2));
+		u8g2.print(profile[6].switchGetRamp(2));
 		u8g2.setCursor(60, 45);
-		u8g2.print(profile[0].switchGetHold(2)); 
-	} 
+		u8g2.print(profile[6].switchGetHold(2));
+	}
+
+	if (page == 66) {
+		core.drawTitle("Reduction Segment 1");
+		u8g2.setFont(u8g2_font_crox1h_tf);
+		u8g2.drawStr(core.centerLine("Reduction amount"), 28, "Reduction amount");
+
+		int8_t _reductVal = value;
+		char _reductChar[5];
+
+		if (_reductVal >= 100) { //Value Clamp
+			value = 100;
+			_reductVal = 100;
+		}
+		else if (_reductVal <= 0) {
+			value = 0;
+			_reductVal = 0;
+		}
+
+		int8_t _reductBar = map(_reductVal, 0, 100, 0, 82);
+
+		u8g2.setFont(u8g2_font_helvB10_tf);
+		core.convertToChar((String(_reductVal) + String("%")), _reductChar);
+		u8g2.drawUTF8(core.centerLine(_reductChar), 47, _reductChar);
+
+		u8g2.drawFrame(23, 54, 82, 9);
+		u8g2.drawBox(23, 54, _reductBar, 9);
+	}
 
 	btnPress = false;
 	u8g2.sendBuffer();

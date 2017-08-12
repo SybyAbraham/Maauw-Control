@@ -53,16 +53,14 @@ void Profiles::setTRH(int prfN) {
 
 	if (_currentSeg > _segs) {
 		//1. EEPROM Write & EPPROM Read and Assign to variables
-		eepromWriteProfile(prfN);
+		eepromWriteProfile(prfN); 
 		//2. Exit.   Using while loop in main file?
 		_exitState = true;
-		_selParam = 2;
+		_selParam = 3; //Exit TRH state
 		_currentSeg = 1;
 		//eepromReadProfile(prfN); //Read from EEPROM and assign variables
 	}
-	else { 
-		_exitState = false;
-	}
+
 	switch (_selParam) {
 	case 0:
 		switchSetTemp(_currentSeg);
@@ -133,200 +131,35 @@ bool Profiles::getExit() {
 }
 
 void Profiles::setExit(bool state) {
+	_selParam = 0;
+	_currentSeg = 1;
 	_exitState = state;
 }
 
-void Profiles::switchSetTemp(uint8_t segNT) {
-	switch (segNT) {
-	case 1:
-		seg[0].setTempUI(1);
-		break;
-	case 2:
-		seg[1].setTempUI(2);
-		break;
-	case 3:
-		seg[2].setTempUI(3);
-		break;
-	case 4:
-		seg[3].setTempUI(4);
-		break;
-	case 5:
-		seg[4].setTempUI(5);
-		break;
-	case 6:
-		seg[5].setTempUI(6);
-		break;
-	case 7:
-		seg[6].setTempUI(7);
-		break;
-	case 8:
-		seg[7].setTempUI(8);
-		break;
-	case 9:
-		seg[8].setTempUI(9);
-		break;
-	}
+void Profiles::switchSetTemp(uint8_t segN) {
+	seg[segN - 1].setTempUI(segN);	
 }
 
-void Profiles::switchSetRamp(uint8_t segNR) {
-	switch (segNR) {
-	case 1:
-		seg[0].setRampUI(1);
-		break;
-	case 2:
-		seg[1].setRampUI(2);
-		break;
-	case 3:
-		seg[2].setRampUI(3);
-		break;
-	case 4:
-		seg[3].setRampUI(4);
-		break;
-	case 5:
-		seg[4].setRampUI(5);
-		break;
-	case 6:
-		seg[5].setRampUI(6);
-		break;
-	case 7:
-		seg[6].setRampUI(7);
-		break;
-	case 8:
-		seg[7].setRampUI(8);
-		break;
-	case 9:
-		seg[8].setRampUI(9);
-		break;
-	}
+void Profiles::switchSetRamp(uint8_t segN) {
+	seg[segN - 1].setRampUI(segN);
 }
 
-void Profiles::switchSetHold(uint8_t segNH) {
-	switch (segNH) {
-	case 1:
-		seg[0].setHoldUI(1);
-		break;
-	case 2:
-		seg[1].setHoldUI(2);
-		break;
-	case 3:
-		seg[2].setHoldUI(3);
-		break;
-	case 4:
-		seg[3].setHoldUI(4);
-		break;
-	case 5:
-		seg[4].setHoldUI(5);
-		break;
-	case 6:
-		seg[5].setHoldUI(6);
-		break;
-	case 7:
-		seg[6].setHoldUI(7);
-		break;
-	case 8:
-		seg[7].setHoldUI(8);
-		break;
-	case 9:
-		seg[8].setHoldUI(9);
-		break;
-	}
+void Profiles::switchSetHold(uint8_t segN) {
+	seg[segN - 1].setHoldUI(segN);
 }
 
 uint16_t Profiles::switchGetTemp(uint8_t segN) {
-	switch (segN) {
-	case 1:
-		return seg[0].getTemp();
-		break;
-	case 2:
-		return seg[1].getTemp();
-		break;
-	case 3:
-		return seg[2].getTemp();
-		break;
-	case 4:
-		return seg[3].getTemp();
-		break;
-	case 5:
-		return seg[4].getTemp();
-		break;
-	case 6:
-		return seg[5].getTemp();
-		break;
-	case 7:
-		return seg[6].getTemp();
-		break;
-	case 8:
-		return seg[7].getTemp();
-		break;
-	case 9:
-		return seg[8].getTemp();
-		break;
-	}
+	return seg[segN - 1].getTemp();
 }
 
 uint16_t Profiles::switchGetRamp(uint8_t segN) {
-	switch (segN) {
-	case 1:
-		return seg[0].getRamp();
-		break;
-	case 2:
-		return seg[1].getRamp();
-		break;
-	case 3:
-		return seg[2].getRamp();
-		break;
-	case 4:
-		return seg[3].getRamp();
-		break;
-	case 5:
-		return seg[4].getRamp();
-		break;
-	case 6:
-		return seg[5].getRamp();
-		break;
-	case 7:
-		return seg[6].getRamp();
-		break;
-	case 8:
-		return seg[7].getRamp();
-		break;
-	case 9:
-		return seg[8].getRamp();
-		break;
-	}
+	return seg[segN - 1].getRamp();
 }
 
 uint16_t Profiles::switchGetHold(uint8_t segN) {
-	switch (segN) {
-	case 1:
-		return seg[0].getHold();
-		break;
-	case 2:
-		return seg[1].getHold();
-		break;
-	case 3:
-		return seg[2].getHold();
-		break;
-	case 4:
-		return seg[3].getHold();
-		break;
-	case 5:
-		return seg[4].getHold();
-		break;
-	case 6:
-		return seg[5].getHold();
-		break;
-	case 7:
-		return seg[6].getHold();
-		break;
-	case 8:
-		return seg[7].getHold();
-		break;
-	case 9:
-		return seg[8].getHold();
-		break;
-	}
-} 
+	return seg[segN - 1].getHold();
+}
+
 
 void Profiles::review() {
 
