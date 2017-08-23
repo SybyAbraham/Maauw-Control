@@ -45,11 +45,11 @@ void Segments::setHold(uint16_t h) {
 void Segments::setTempUI(uint8_t segN) {
 
 	char menuTitle[15]; //Create variable to hold converted char
-	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
-	core.drawTitle(menuTitle); //Draw the title using the converted var
+	maauw.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
+	maauw.drawTitle(menuTitle); //Draw the title using the converted var
 
 	u8g2.setFont(u8g2_font_crox1h_tf);
-	u8g2.drawStr(core.centerLine("Enter Temperature"), 30, "Enter Temperature");
+	u8g2.drawStr(maauw.centerLine("Enter Temperature"), 30, "Enter Temperature");
 
 	_temp = value; //Rot Enc Assign
 
@@ -83,23 +83,23 @@ void Segments::setTempUI(uint8_t segN) {
 	}
 
 	u8g2.setFont(u8g2_font_helvB10_tf);
-	core.convertToChar((String(_temp) + String("°C")), _tempChar);
+	maauw.convertToChar((String(_temp) + String("°C")), _tempChar);
 	u8g2.drawUTF8(10, 51, _tempChar);
 	u8g2.setFont(u8g2_font_helvB10_tf);
 	u8g2.drawXBMP(79, 40, 9, 11, logo.cone11px_bits);
 	char coneChar[5];
-	core.convertToChar(strC, coneChar);
+	maauw.convertToChar(strC, coneChar);
 	u8g2.drawUTF8(90, 51, coneChar);
 }
 
 void Segments::setRampUI(uint8_t segN) {
 
 	char menuTitle[15];		//Create variable to hold converted char
-	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
-	core.drawTitle(menuTitle); //Draw the title using the converted var
+	maauw.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
+	maauw.drawTitle(menuTitle); //Draw the title using the converted var
 
 	u8g2.setFont(u8g2_font_crox1h_tf);
-	u8g2.drawStr(core.centerLine("Enter Ramp Rate"), 30, "Enter Ramp Rate");
+	u8g2.drawStr(maauw.centerLine("Enter Ramp Rate"), 30, "Enter Ramp Rate");
 
 	_ramp = value;
 
@@ -108,18 +108,18 @@ void Segments::setRampUI(uint8_t segN) {
 		_ramp = 500;
 	}
 	char rampChar[10];
-	core.convertToChar((String(_ramp) + String("°C/HR")), rampChar);
+	maauw.convertToChar((String(_ramp) + String("°C/HR")), rampChar);
 	u8g2.setFont(u8g2_font_helvB10_tf);
-	u8g2.drawUTF8(core.centerLine(rampChar), 51, rampChar);
+	u8g2.drawUTF8(maauw.centerLine(rampChar), 51, rampChar);
 }
 
 void Segments::setHoldUI(uint8_t segN) {
 	char menuTitle[15];			//Create variable to hold converted char
-	core.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
-	core.drawTitle(menuTitle);	//Draw the title using the converted var
+	maauw.convertToChar(String(F("Ramp Segment ")) + String(segN), menuTitle); //Convert to char and store in above var
+	maauw.drawTitle(menuTitle);	//Draw the title using the converted var
 
 	u8g2.setFont(u8g2_font_crox1h_tf);
-	u8g2.drawStr(core.centerLine("Enter Hold Time"), 34, "Enter Hold Time");
+	u8g2.drawStr(maauw.centerLine("Enter Hold Time"), 34, "Enter Hold Time");
 
 	_holdMinutes = value;
 	if (_holdMinutes > 59) {
@@ -179,6 +179,6 @@ void Segments::setHoldUI(uint8_t segN) {
 	}
 
 	u8g2.setFont(u8g2_font_crox1hb_tr);
-	core.convertToChar(String(hrsStr + minStr), charHrMin);
-	u8g2.drawStr(core.centerLine(charHrMin), 53, charHrMin);
+	maauw.convertToChar(String(hrsStr + minStr), charHrMin);
+	u8g2.drawStr(maauw.centerLine(charHrMin), 53, charHrMin);
 }

@@ -10,36 +10,39 @@
 #include "Segments.h"
 #include <EEPROM.h>
 
-class Profiles : public Segments {
+extern unsigned long currentMillis;
+
+class Profiles:Segments{
 
   public:
 	//Constructor
     Profiles();
 
 	//Methods
-    void setSegs(void);
-    void review();
-	void setTRH(int);
-	void eepromWriteProfile(uint8_t prfN);
-	void eepromReadProfile(uint8_t prfN);
+    void reviewUI(uint8_t prfN);
 	uint16_t switchGetTemp(uint8_t);
 	uint16_t switchGetRamp(uint8_t);
 	uint16_t switchGetHold(uint8_t);
-	bool getExit(void);
-	void setExit(bool);
+	void eepromReadProfile(uint8_t);
+	uint8_t setTRH(uint8_t);
+	void setSegs(void);
 
   private:
 	//Create 9 segment objects for each profile
-	  Segments seg[9];
+	Segments seg[9];
 
 	//Variables
     int8_t _segs;
 	int8_t _selParam;
 	int8_t _currentSeg;
 	int32_t _eeAddress;
-	bool _exitState;
+	unsigned long _saveTimer;
+	bool _exit;
 
 	//Methods
+	
+
+	void eepromWriteProfile(uint8_t);
 	void switchSetTemp(uint8_t);
 	void switchSetRamp(uint8_t);
 	void switchSetHold(uint8_t);
