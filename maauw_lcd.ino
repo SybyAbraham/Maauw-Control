@@ -54,10 +54,10 @@ Reduction reduce;
 XBMPLogos logo;
 MaauwOperations maauw;
 
-char menuItem1[] = "Ignite Burner";
+char menuItem1[15];
 char menuItem2[] = "Firing Profiles";
 char menuItem3[] = "Reduction Settings";
-char menuItem4[] = "Network Settings";
+char menuItem4[] = "Extingush Burner";
 char menuItem5[] = "Display";
 char menuItem6[] = "Maauw Control";
 
@@ -137,7 +137,9 @@ void drawMenuItems() {
 
 ISR(TIMER4_COMPA_vect)          // timer compare interrupt service routine
 {
+	if(maauw.getValveState() == 1){
 	digitalWrite(13, digitalRead(13) ^ 1);   // toggle LED pin
+	}
 }
 
 SIGNAL(TIMER0_COMPA_vect) {
@@ -222,6 +224,13 @@ void loop(void) {
 	maauw.readEncoderDirection();
 	maauw.readEncoderButton();
 
+	if (maauw.getValveState() == 1){
+		maauw.convertToChar(String("Re-light Burner"), menuItem1);
+	}
+	else {
+		maauw.convertToChar(String("Ignite Burner"), menuItem1);
+	}
+
 	if (btnPress && page == 1) {
 		btnPress = false;
 		page = 2;
@@ -235,6 +244,12 @@ void loop(void) {
 	if (btnPress == true && page == 2 && selMenuItem == 3) {
 		btnPress = false;
 		page = 66;
+	}
+
+	if (btnPress == true && page == 2 && selMenuItem == 4) {
+		btnPress = false;
+		maauw.extingush();
+		page = 1;
 	}
 
 	if (btnPress == true && page == 2 && selMenuItem == 1) {
@@ -412,10 +427,6 @@ void drawMenu() {
 	if (page == 88) {
 		if (maauw.ignite() == 0) {
 			page = 1;
-		}
-		else {
-			u8g2.setFont(u8g2_font_helvB10_tf);
-			u8g2.drawUTF8(maauw.centerLine("Igniting..."), 41, "Igniting...");
 		}
 	}
 

@@ -7,7 +7,7 @@ Copyright (c) 2017 Syby Abraham.
 
 //Default Constructor
 
-MaauwOperations::MaauwOperations(){
+MaauwOperations::MaauwOperations() {
 	_valvepin = 28;
 	_ignpin = 29;
 	pinMode(_valvepin, OUTPUT);
@@ -21,30 +21,46 @@ MaauwOperations::MaauwOperations(){
 uint8_t MaauwOperations::ignite(void) {
 
 	//master ignition routine
-	
-	if (_valveState == 0) {
+
+	if (_valveState == 0) { //If valve is not already open, open it
 		_valveState = 1;
 		digitalWrite(_valvepin, _valveState);
 
 	}
 
-	if (_ignState == 0) {
+	if (_ignState == 0) { //If igniter is not already on, turn it on
 		_ignState = 1;
 		digitalWrite(_ignpin, _ignState);
 		_igntimer = millis(); //Clock capture
-		return 1;
+		_igntimer = millis(); //Clock capture
+		return 1; //Signal incomplete process
 	}
-	else { //igniter already on
+	else { //if igniter is already on
 	 //check timer
+		u8g2.drawXBMP(38, 3, 52, 15, logo.maauwS_bits);
+		u8g2.setFont(u8g2_font_helvB10_tf);
+		u8g2.drawUTF8(centerLine("Lighting Burner"), 38, "Lighting Burner");
+		int8_t igniteBar = map((currentMillis - _igntimer), 0, 1000, 0, 82);	//Map the elapsed time to 0 to 82 pixels
+		u8g2.drawFrame(23, 54, 82, 9);											//for the progress bar
+		u8g2.drawBox(23, 54, igniteBar, 9);
+
 		if (currentMillis - _igntimer >= 1000) {
 			_ignState = 0;
 			digitalWrite(_ignpin, _ignState);
-			return 0;
+			u8g2.drawUTF8(centerLine("Ignited"), 41, "Ignited");
+			u8g2.drawFrame(23, 54, 82, 9);
+			u8g2.drawBox(23, 54, 82, 9);
+			return 0; //Signal completed process
 		}
 		else {
-			return 1;
+			return 1; //Signal incomplete process
 		}
 	}
+}
+
+void MaauwOperations::extingush() {
+	_valveState = 0;
+	digitalWrite(_valvepin, _valveState);
 }
 
 uint16_t MaauwOperations::readPyro(void) {
@@ -141,7 +157,7 @@ void MaauwOperations::readEncoderButton() {
 		case ClickEncoder::Held:
 			if (page != 1) {
 				page = 1;
-				}
+			}
 
 		}
 	}

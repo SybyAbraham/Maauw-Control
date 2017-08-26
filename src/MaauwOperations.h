@@ -12,6 +12,7 @@ Copyright (c) 2017 Syby Abraham.
 #include <ClickEncoder.h>
 #include <Adafruit_MAX31855.h>
 #include <PID_v1.h>
+#include "XBMPLogos.h"
 
 //extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
 extern U8G2_ST7565_64128N_F_4W_HW_SPI u8g2;
@@ -21,6 +22,7 @@ extern ClickEncoder *encoder;
 extern uint16_t page;
 extern boolean up, down, btnPress;
 extern unsigned long currentMillis;
+extern XBMPLogos logo;
 
 static Adafruit_MAX31855 max31855(3); //HW SPI / Chip Select Pin 3
 
@@ -42,6 +44,7 @@ public:
 	uint16_t readBurner(void);
 	uint16_t readExternalTemp(void);
 	bool getValveState();
+	void extingush();
 
 private:
 	bool _valveState;
@@ -49,6 +52,7 @@ private:
 	uint8_t PROGMEM _valvepin;
 	uint8_t PROGMEM _ignpin;
 	unsigned long _igntimer;
+	unsigned long _ignExit;
 };
 
 #endif
