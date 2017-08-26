@@ -4,3 +4,6 @@
 [submodule "encoder"]
 	path = encoder
 	url = https://github.com/0xPIT/encoder
+[submodule "Arduino-PID-Library"]
+	path = Arduino-PID-Library
+	url = https://github.com/br3ttb/Arduino-PID-Library

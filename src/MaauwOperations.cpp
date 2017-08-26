@@ -7,11 +7,72 @@ Copyright (c) 2017 Syby Abraham.
 
 //Default Constructor
 
+MaauwOperations::MaauwOperations(){
+	_valvepin = 28;
+	_ignpin = 29;
+	pinMode(_valvepin, OUTPUT);
+	pinMode(_ignpin, OUTPUT);
+}
 
 //Public Definitions
 
+////////////////////////// BEGIN ELECTROMECHANICAL DEFINTIONS //////////////////////////
+
+uint8_t MaauwOperations::ignite(void) {
+
+	//master ignition routine
+	
+	if (_valveState == 0) {
+		_valveState = 1;
+		digitalWrite(_valvepin, _valveState);
+
+	}
+
+	if (_ignState == 0) {
+		_ignState = 1;
+		digitalWrite(_ignpin, _ignState);
+		_igntimer = millis(); //Clock capture
+		return 1;
+	}
+	else { //igniter already on
+	 //check timer
+		if (currentMillis - _igntimer >= 1000) {
+			_ignState = 0;
+			digitalWrite(_ignpin, _ignState);
+			return 0;
+		}
+		else {
+			return 1;
+		}
+	}
+}
+
+uint16_t MaauwOperations::readPyro(void) {
+	//Read Internal Kiln Temperature
+	return max31855.readCelsius();
+}
+
+uint16_t MaauwOperations::readBurner(void) {
+	//read burner thermocouple
+
+}
+
+uint16_t MaauwOperations::readExternalTemp(void) {
+	//Read Outside Temperature
+	return max31855.readInternal();
+}
+
+bool MaauwOperations::getValveState() {
+	return _valveState;
+}
+
+////////////////////////// END ELECTROMECHANICAL DEFINTIONS //////////////////////////
+
+
+////////////////////////// BEGIN USER INTERFACE DEFINITIONS //////////////////////////
+
 //String to char array conversion
-void convertToChar(String str, char outChar[]) {
+void MaauwOperations::convertToChar(String str, char outChar[]) {
 	int16_t str_len = str.length() + 1;
 	char convChar[str_len];
 	str.toCharArray(convChar, str_len);
@@ -19,13 +80,13 @@ void convertToChar(String str, char outChar[]) {
 }
 
 //Find X center
-int centerLine(char input[]) {
+int MaauwOperations::centerLine(char input[]) {
 	int xVal = ((128 - u8g2.getStrWidth(input)) / 2);
 	return xVal;
 }
 
 //Draw Menu Title
-void drawTitle(char dtChar[]) {
+void MaauwOperations::drawTitle(char dtChar[]) {
 	u8g2.setFont(u8g2_font_helvB08_tr);                    //Set font
 	u8g2.drawBox(0, 0, 128, 13);                           //Draw a box at the top of the display
 	u8g2.setDrawColor(0);                                  //Set font color to black
@@ -34,7 +95,7 @@ void drawTitle(char dtChar[]) {
 }
 
 //Draw Menu Item
-void drawMenuItem(int pos, char dmText[], bool box) {
+void MaauwOperations::drawMenuItem(int pos, char dmText[], bool box) {
 	u8g2.setFont(u8g2_font_crox1h_tf);                      //Set font for menu items
 	if (pos == 1) {
 		pos = 30;
@@ -56,7 +117,7 @@ void drawMenuItem(int pos, char dmText[], bool box) {
 	}
 }
 
-void readEncoderDirection() {
+void MaauwOperations::readEncoderDirection() {
 	value += encoder->getValue();
 
 	if (value > lastValue) {
@@ -70,7 +131,7 @@ void readEncoderDirection() {
 	}
 }
 
-void readEncoderButton() {
+void MaauwOperations::readEncoderButton() {
 	ClickEncoder::Button b = encoder->getButton();
 	if (b != ClickEncoder::Open) {
 		switch (b) {
@@ -78,8 +139,12 @@ void readEncoderButton() {
 			btnPress = true;
 			break;
 		case ClickEncoder::Held:
-			page = 1;
-			break;
+			if (page != 1) {
+				page = 1;
+				}
+
 		}
 	}
 }
+
+////////////////////////// END USER INTERFACE DEFINITIONS //////////////////////////
