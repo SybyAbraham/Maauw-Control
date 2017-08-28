@@ -27,35 +27,39 @@ uint8_t MaauwOperations::ignite(void) {
 		digitalWrite(_valvepin, _valveState);
 
 	}
-
-	if (_ignState == 0) { //If igniter is not already on, turn it on
+	//If igniter is not already on, turn it on
+	if (_ignState == 0 && _igntimer == 0) {			//_igntimer == 0 condition to prevent this code from running twice
 		_ignState = 1;
 		digitalWrite(_ignpin, _ignState);
-		_igntimer = millis(); //Clock capture
-		_igntimer = millis(); //Clock capture
-		return 1; //Signal incomplete process
+		_igntimer = millis();						//Clock capture. Non-zero value prevents this code running again
 	}
-	else { //if igniter is already on
-	 //check timer
+	//If igniter is already on, check timer and turn it off when timer expires
+	else if (_ignState == 1 && _ignExit == 0) {		//_ignExit == 0 condition to prevent this code from running after ignExit is set
 		u8g2.drawXBMP(38, 3, 52, 15, logo.maauwS_bits);
 		u8g2.setFont(u8g2_font_helvB10_tf);
 		u8g2.drawUTF8(centerLine("Lighting Burner"), 38, "Lighting Burner");
-		int8_t igniteBar = map((currentMillis - _igntimer), 0, 1000, 0, 82);	//Map the elapsed time to 0 to 82 pixels
-		u8g2.drawFrame(23, 54, 82, 9);											//for the progress bar
+		int8_t igniteBar = map((clock - _igntimer), 0, 1000, 0, 82);//Map the elapsed time to 0 to 82 pixels
+		u8g2.drawFrame(23, 54, 82, 9);								//for the progress bar
 		u8g2.drawBox(23, 54, igniteBar, 9);
-
-		if (currentMillis - _igntimer >= 1000) {
-			_ignState = 0;
+		if (clock - _igntimer >= 1000 && _ignExit == 0) {			//check timer, if ignition timer expires
+			_ignState = 0;											//turn off igniter
 			digitalWrite(_ignpin, _ignState);
-			u8g2.drawUTF8(centerLine("Ignited"), 41, "Ignited");
-			u8g2.drawFrame(23, 54, 82, 9);
-			u8g2.drawBox(23, 54, 82, 9);
-			return 0; //Signal completed process
-		}
-		else {
-			return 1; //Signal incomplete process
+			_ignExit = millis();									//Clock capture. Non-zero value prevents this code running again
 		}
 	}
+	else if (_ignExit != 0) { //if exit clock is active, show "Ignited" and exit when timer expires
+		u8g2.drawXBMP(38, 3, 52, 15, logo.maauwS_bits);
+		u8g2.setFont(u8g2_font_helvB10_tf);
+		u8g2.drawUTF8(centerLine("Ignited!"), 38, "Ignited!");
+		u8g2.drawFrame(23, 54, 82, 9);
+		u8g2.drawBox(23, 54, 82, 9);
+		if ((clock - _ignExit) > 1000) {	//Exit when timer expires
+			_igntimer = 0;					//Clear Igniter Clock
+			_ignExit = 0;					//Clear Exit Clock
+			return 0;						//Signal completed process / Exit Ignition State
+		}
+	}
+	return 1; //Signal incomplete process / Stay in Ignition State
 }
 
 void MaauwOperations::extingush() {
